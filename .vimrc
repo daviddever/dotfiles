@@ -24,6 +24,8 @@ set undolevels=1000
 set number
 set numberwidth=1
 
+map <F11> :set invnumber
+
 """ Moving Around/Editing
 
 set ruler                        " show the cursor position all the time
