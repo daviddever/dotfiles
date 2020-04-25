@@ -1,4 +1,11 @@
-call plug#begin('~/.config/nvim/plugged')
+if empty(glob('~/.vim/autoload/plug.vim'))
+  silent !curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
+
+call plug#begin(stdpath('data') . '/plugged')
+  Plug 'autozimu/LanguageClient-neovim', { 'branch': 'next', 'do': 'bash install.sh' }
   Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
   Plug 'Xuyuanp/nerdtree-git-plugin'
   Plug 'airblade/vim-gitgutter'
@@ -8,13 +15,16 @@ call plug#begin('~/.config/nvim/plugged')
   Plug 'janko-m/vim-test'
   Plug 'jremmen/vim-ripgrep'
   Plug 'kchmck/vim-coffee-script'
-  Plug 'mxw/vim-jsx'
+  Plug 'keith/swift.vim'
+  Plug 'neomake/neomake'
   Plug 'pangloss/vim-javascript'
+  Plug 'MaxMEllon/vim-jsx-pretty'
+  Plug 'pest-parser/pest.vim'
   Plug 'rust-lang/rust.vim'
   Plug 'sbdchd/neoformat'
   Plug 'scrooloose/nerdtree'
+  Plug 'slim-template/vim-slim'
   Plug 'stephpy/vim-yaml'
-  Plug 'tell-k/vim-browsereload-mac'
   Plug 'tpope/vim-fugitive'
   Plug 'tpope/vim-rails', { 'commit': 'f8f5c6c544de7d9ebff7283142593e1733ffae89' } " for syntax hl
   Plug 'tpope/vim-rhubarb'
@@ -22,12 +32,8 @@ call plug#begin('~/.config/nvim/plugged')
   Plug 'vim-airline/vim-airline-themes'
   Plug 'vim-ruby/vim-ruby'
   Plug 'nvie/vim-flake8'
+  Plug 'psf/black', { 'branch': 'stable' }
 call plug#end()
-
-let g:airline_powerline_fonts = 1
-
-let g:python2_host_prog = '/usr/local/bin/python'
-let g:python3_host_prog = '/usr/local/bin/python3'
 
 colorscheme solarized
 set background=dark
@@ -37,6 +43,14 @@ let g:airline_theme='solarized'
 " italics
 highlight Comment cterm=italic
 " end italics
+
+" navigation ctrl-jklm changes to that split
+map <c-j> <c-w>j
+map <c-k> <c-w>k
+map <c-l> <c-w>l
+map <c-h> <c-w>h
+imap <C-w> <C-O><C-w>
+" end navigation
 
 " line numbers
 set number
@@ -86,22 +100,17 @@ let g:javascript_plugin_flow = 1
 let g:jsx_ext_required = 0 " also highlight .js files
 " end vim-jsx
 
-" ctrlp
-nnoremap <silent> <leader>f :CtrlP<CR>
-nnoremap <silent> <leader>b :CtrlPBuffer<CR>
-nnoremap <silent> <leader>m :CtrlPMRU<CR>
-nnoremap <silent> <leader>. :CtrlPTag<CR>
-" end ctrlp
-
 " neoformat - prettier
 autocmd BufWritePre *.js Neoformat
 autocmd BufWritePre *.jsx Neoformat
-autocmd FileType javascript set formatprg=./node_modules/prettier/bin/prettier.js\ --stdin\ --single-quote\ --no-semi\ --trailing-comma\ es5
+autocmd FileType javascript set formatprg=./node_modules/prettier/bin-prettier.js\ --stdin\ --single-quote\ --no-semi\ --trailing-comma\ es5\ --parser\ babel
 let g:neoformat_try_formatprg = 1
+"let g:neoformat_only_msg_on_error = 1
+" end neoformat - prettier
 
 " ripgrep
 nmap <leader>a <Esc>:Rg<SPACE>
-let g:rg_command = "rg --vimgrep --sort-files --smart-case"
+let g:rg_command = "rg --vimgrep --sort-files"
 if executable('rg')
   set grepprg=rg\ --color=never
   let g:ctrlp_user_command = 'rg %s --files --color=never --glob ""'
@@ -110,8 +119,6 @@ endif
 " end ripgrep
 
 " NERDtree
-autocmd StdinReadPre * let s:std_in=1
-autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
 " close vim if NERDtree is last window
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 map <C-n> :NERDTreeToggle<CR>
@@ -122,8 +129,11 @@ let NERDTreeShowHidden=1 " show dotfiles
 let g:deoplete#enable_at_startup = 1
 " end deoplete
 
-" vim-browserload-mac
-nnoremap <silent> <leader>r :ChromeReload<CR>
-let g:returnApp = "iTerm"
-" end vim browsereload-mac
+let g:black_virtualenv="~/.vim_black"
 
+nnoremap <F9> :Black<CR>
+autocmd BufWritePre *.py execute ':Black'
+
+
+packloadall
+silent! helptags ALL

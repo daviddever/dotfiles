@@ -14,6 +14,8 @@ autoload -Uz promptinit
 promptinit
 prompt clint
 
-export PATH=/Applications/MySQLWorkbench.app/Contents/MacOS:$PATH
+ export NVM_DIR=~/.nvm
+ [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
 
-
+# Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
+export PATH="$PATH:$HOME/.rvm/bin"
