@@ -35,6 +35,8 @@ call plug#begin(stdpath('data') . '/plugged')
   Plug 'psf/black', { 'branch': 'stable' }
 call plug#end()
 
+let g:python3_host_prog = '/usr/bin/python3'
+
 colorscheme solarized
 set background=dark
 
