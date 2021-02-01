@@ -1,6 +1,7 @@
 [user]
-	email = david.dever@cox.net
-	name = David Dever
+	# These values are set in ~/.gitconfig_local
+[include]
+	path = ~/.gitconfig_local
 [color]
 	ui = auto
 [push]
