@@ -136,6 +136,7 @@ let g:black_virtualenv="~/.vim_black"
 nnoremap <F9> :Black<CR>
 autocmd BufWritePre *.py execute ':Black'
 
+autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
 
 packloadall
 silent! helptags ALL
